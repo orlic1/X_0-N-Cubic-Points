@@ -71,6 +71,7 @@ end if;
 end for;
 
 assert #deg3new eq 20;
+// there are 20 irreducible divisors of degree 3
 
 for D in deg3new do
 K:=ResidueClassField(D);
@@ -79,3 +80,6 @@ assert Degree(K) eq 3;
 assert IsTotallyReal(K) eq false;
 assert Discriminant(K) lt 0;
 end for;
+
+// thus there are no irreducible degree 3 divisors
+// defined over a totally real cubic field
