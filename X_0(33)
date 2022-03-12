@@ -1,0 +1,81 @@
+Qx<x>:=PolynomialRing(Rationals());
+
+X:=SmallModularCurve(33);
+
+cusps:=&cat[CuspPlaces(X,33,d) : d in Divisors(33)];
+
+assert &and[Degree(P) eq 1 : P in cusps];
+assert #NonCuspidalQRationalPoints(X,33) eq 0;
+
+Y:=HyperellipticCurve(2*x^6-2*x^5+11*x^4-10*x^3+20*x^2-11*x+8, -x^4-x^2-1);
+
+tf,phi:=IsIsomorphic(X,Y);
+assert tf;
+
+cusps:={Pushforward(phi,c) : c in cusps};
+
+ptsY:= [ Y![1 , 1 , 0], Y![1 , 0 , 0], Y![1 , 6 , 1], Y![1 , -3 , 1]];
+assert cusps eq {Place(p) : p in ptsY};
+
+p0:=ptsY[1];
+
+J:=Jacobian(Y);
+ptsJ:=[ p-p0 : p in ptsY   ];
+assert &and[10*Q eq J!0 : Q in ptsJ];
+assert BadPrimes(J) eq [3,11];
+
+J5:=BaseChange(J,GF(5));
+B,mu:=AbelianGroup(J5);
+A:=FreeAbelianGroup(4);
+eps:=hom<A->B | [ (J5!Q)@@mu : Q in ptsJ  ] >;
+C:=Image(eps);
+
+Q1:=ptsJ[2];
+Q2:=ptsJ[3];
+
+mu1:=(J5!Q1)@@mu;
+mu2:=(J5!Q2)@@mu;
+
+cuspGp:=AbelianGroup([10,10]);
+delta:=hom<cuspGp->C | [mu1,mu2]>;
+assert #Kernel(delta) eq 1;
+assert Image(delta) eq C;
+
+cuspGpElts:={a*Q1+b*Q2 : a in [0..9], b in [0..4]};
+assert #cuspGpElts eq 50;
+
+D1:=Place(ptsY[2])-Place(ptsY[1]);
+D2:=Place(ptsY[3])-Place(ptsY[1]);
+
+infdiv:=3*Place(ptsY[1]);
+
+deg3:=[a*D1+b*D2+infdiv : a in [0..9], b in [0..4]];
+
+assert #deg3 eq 50;
+assert &and[Degree(D) eq 3 : D in deg3];
+
+assert &and[Dimension(RiemannRochSpace(D)) in [1,2] : D in deg3];
+
+deg3:=[ D : D in deg3 | Dimension(RiemannRochSpace(D)) eq 1];
+
+deg3new:=[];
+for D in deg3 do
+L,mu:=RiemannRochSpace(D);
+assert Dimension(L) eq 1;
+D1:=D+Divisor(mu(L.1));
+assert IsEffective(D1);
+decomp:=Decomposition(D1);
+if #decomp eq 1 and decomp[1,2] eq 1 then
+Append(~deg3new,decomp[1,1]);
+end if;
+end for;
+
+assert #deg3new eq 20;
+
+for D in deg3new do
+K:=ResidueClassField(D);
+assert IsNumberField(K);
+assert Degree(K) eq 3;
+assert IsTotallyReal(K) eq false;
+assert Discriminant(K) lt 0;
+end for;
