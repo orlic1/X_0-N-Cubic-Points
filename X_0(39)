@@ -1,0 +1,92 @@
+Qx<x>:=PolynomialRing(Rationals());
+
+X:=SmallModularCurve(39);
+
+cusps:=&cat[CuspPlaces(X,39,d) : d in Divisors(39)];
+
+assert &and[Degree(P) eq 1 : P in cusps];
+assert #NonCuspidalQRationalPoints(X,39) eq 0;
+
+Y:=HyperellipticCurve(-2*x^7+2*x^5-7*x^4+2*x^3-2*x, -x^4-x^3-x^2-x-1);
+
+tf,phi:=IsIsomorphic(X,Y);
+assert tf;
+
+cusps:={Pushforward(phi,c) : c in cusps};
+
+ptsY:= [ Y![1 , 1 , 0], Y![1 , 0 , 0], Y![0 , 0 , 1], Y![0 , 1 , 1]];
+assert cusps eq {Place(p) : p in ptsY};
+
+p0:=ptsY[1];
+
+J:=Jacobian(Y);
+ptsJ:=[ p-p0 : p in ptsY   ];
+assert &and[28*Q eq J!0 : Q in ptsJ];
+assert BadPrimes(J) eq [3,13];
+
+J5:=BaseChange(J,GF(5));
+B,mu:=AbelianGroup(J5);
+A:=FreeAbelianGroup(4);
+eps:=hom<A->B | [ (J5!Q)@@mu : Q in ptsJ  ] >;
+C:=Image(eps);
+
+Q1:=ptsJ[2];
+mu1:=(J5!Q1)@@mu;
+Q2:=ptsJ[3];
+mu2:=(J5!Q2)@@mu;
+
+cuspGp:=AbelianGroup([28,4]);
+delta:=hom<cuspGp->C | [mu1,mu2]>;
+assert #Kernel(delta) eq 2;
+assert Image(delta) eq C;
+
+//We have proven now that Q1 and Q2 generate C.
+//However, they are not the basis since the kernel has 2 elements.
+//This is not a big problem, though.
+//We simply count each class twice so we will just have to divide #deg3new by 2
+// to get the number of irreducible divisors of degree 3
+
+cuspGpElts:={a*Q1+b*Q2 : a in [0..27], b in [0..3]};
+assert #cuspGpElts eq 56; // since each class is counted twice
+
+D1:=Place(ptsY[2])-Place(ptsY[1]);
+D2:=Place(ptsY[3])-Place(ptsY[1]);
+
+infdiv:=3*Place(ptsY[1]);
+
+deg3:=[a*D1+b*D2+infdiv : a in [0..27], b in [0..3]];
+
+assert #deg3 eq 112;
+assert &and[Degree(D) eq 3 : D in deg3];
+
+assert &and[Dimension(RiemannRochSpace(D)) in [1,2] : D in deg3];
+
+deg3:=[ D : D in deg3 | Dimension(RiemannRochSpace(D)) eq 1];
+
+assert #deg3 eq 104;
+
+deg3new:=[];
+for D in deg3 do
+L,mu:=RiemannRochSpace(D);
+assert Dimension(L) eq 1;
+D1:=D+Divisor(mu(L.1));
+assert IsEffective(D1);
+decomp:=Decomposition(D1);
+if #decomp eq 1 and decomp[1,2] eq 1 then
+Append(~deg3new,decomp[1,1]);
+end if;
+end for;
+
+assert #deg3new eq 48; 
+// thus there are 24 irreducible divisors of degree 3
+
+for D in deg3new do
+K:=ResidueClassField(D);
+assert IsNumberField(K);
+assert Degree(K) eq 3;
+assert IsTotallyReal(K) eq false;
+assert Discriminant(K) lt 0;
+end for
+
+// thus there are no irreducible degree 3 divisors
+// defined over a totally real cubic field
