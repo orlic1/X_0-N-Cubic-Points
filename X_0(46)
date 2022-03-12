@@ -1,0 +1,87 @@
+Qx<x>:=PolynomialRing(Rationals());
+
+X:=SmallModularCurve(46);
+
+cusps:=&cat[CuspPlaces(X,46,d) : d in Divisors(46)];
+
+assert &and[Degree(P) eq 1 : P in cusps];
+assert #NonCuspidalQRationalPoints(X,46) eq 0;
+
+Y:=HyperellipticCurve(-x^11+x^10+x^9-7*x^8+21*x^7-29*x^6+33*x^5-16*x^4+6*x^3+3*x^2+2*x-2, -x^6-x^5-x^3-1);
+
+tf,phi:=IsIsomorphic(X,Y);
+assert tf;
+
+cusps:={Pushforward(phi,c) : c in cusps};
+
+ptsY:= [ Y![1 , 1 , 0], Y![1 , 0 , 0], Y![1,-2,1], Y![1,6,1]];
+assert cusps eq {Place(p) : p in ptsY};
+
+p0:=ptsY[1];
+
+J:=Jacobian(Y);
+ptsJ:=[ p-p0 : p in ptsY   ];
+assert &and[22*Q eq J!0 : Q in ptsJ];
+assert BadPrimes(J) eq [2,23];
+
+J3:=BaseChange(J,GF(3));
+B,mu:=AbelianGroup(J3);
+
+A:=FreeAbelianGroup(4);
+eps:=hom<A->B | [ (J3!Q)@@mu : Q in ptsJ  ] >;
+C:=Image(eps);
+
+Q1:=ptsJ[3];
+Q2:=ptsJ[2];
+mu1:=(J3!Q1)@@mu;
+mu2:=(J3!Q2)@@mu;
+
+cuspGp:=AbelianGroup([22,11]);
+delta:=hom<cuspGp->C | [mu1,mu2]>;
+assert #Kernel(delta) eq 1;
+assert Image(delta) eq C;
+
+cuspGpElts:={a*Q1+b*Q2 : a in [0..21], b in [0..10]};
+assert #cuspGpElts eq 242;
+
+D1:=Place(ptsY[3])-Place(ptsY[1]);
+D2:=Place(ptsY[2])-Place(ptsY[1]);
+
+infdiv:=3*Place(ptsY[1]);
+
+deg3:=[a*D1+b*D2+infdiv : a in [0..21], b in [0..10]];
+
+assert #deg3 eq 242;
+assert &and[Degree(D) eq 3 : D in deg3];
+
+assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2] : D in deg3];
+
+deg3:=[ D : D in deg3 | Dimension(RiemannRochSpace(D)) eq 1];
+
+assert #deg3 eq 22;
+
+deg3new:=[];
+for D in deg3 do
+L,mu:=RiemannRochSpace(D);
+assert Dimension(L) eq 1;
+D1:=D+Divisor(mu(L.1));
+assert IsEffective(D1);
+decomp:=Decomposition(D1);
+if #decomp eq 1 and decomp[1,2] eq 1 then
+Append(~deg3new,decomp[1,1]);
+end if;
+end for;
+
+assert #deg3new eq 2;
+// thus there are 2 irreducible divisors of degree 3
+
+for D in deg3new do
+K:=ResidueClassField(D);
+assert IsNumberField(K);
+assert Degree(K) eq 3;
+assert IsTotallyReal(K) eq false;
+assert Discriminant(K) lt 0;
+end for;
+
+// thus there are no irreducible degree 3 divisors
+// defined over a totally real cubic field
