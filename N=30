@@ -1,0 +1,96 @@
+Qx<x>:=PolynomialRing(Rationals());
+
+X:=SmallModularCurve(30);
+
+cusps:=&cat[CuspPlaces(X,30,d) : d in Divisors(30)];
+
+assert &and[Degree(P) eq 1 : P in cusps];
+assert #NonCuspidalQRationalPoints(X,30) eq 0;
+
+Y:=HyperellipticCurve(3*x^7+19*x^6+60*x^5+110*x^4+121*x^3+79*x^2+28*x+4, -x^4-x^3-x^2);
+
+tf,phi:=IsIsomorphic(X,Y);
+assert tf;
+
+cusps:={Pushforward(phi,c) : c in cusps};
+
+ptsY:= [ Y![1 , 1 , 0], Y![1 , 0 , 0], Y![-2 , 4 , 1], Y![-2 , 8 , 1], Y![-1 , 0 , 1], Y![0 , -2 , 1], Y![-1 , 1 , 1], Y![0 , 2 , 1]];
+assert cusps eq {Place(p) : p in ptsY};
+
+p0:=ptsY[1];
+
+J:=Jacobian(Y);
+ptsJ:=[ p-p0 : p in ptsY   ];
+assert &and[24*Q eq J!0 : Q in ptsJ];
+assert BadPrimes(J) eq [2,3,5];
+
+J7:=BaseChange(J,GF(7));
+B,mu:=AbelianGroup(J7);
+
+A:=FreeAbelianGroup(8);
+eps:=hom<A->B | [ (J7!Q)@@mu : Q in ptsJ  ] >;
+C:=Image(eps);
+
+Q1:=ptsJ[4]; //order 24
+Q2:=ptsJ[7]; // order 4
+Q3:=3*ptsJ[5]; //order 2
+mu1:=(J7!Q1)@@mu;
+mu2:=(J7!Q2)@@mu;
+mu3:=(J7!Q3)@@mu;
+
+cuspGp:=AbelianGroup([24,4,2]);
+delta:=hom<cuspGp->C | [mu1,mu2,mu3]>;
+assert #Kernel(delta) eq 1;
+assert Image(delta) eq C;
+
+cuspGpElts:={a*Q1+b*Q2+c*Q3 : a in [0..23], b in [0..3], c in [0..1]};
+assert #cuspGpElts eq 192;
+
+D1:=Place(ptsY[4])-Place(ptsY[1]);
+D2:=Place(ptsY[7])-Place(ptsY[1]);
+D3:=2*Place(ptsY[5])-2*Place(ptsY[1]);
+
+infdiv:=3*Place(ptsY[1]);
+
+deg3:=[a*D1+b*D2+c*D3+infdiv : a in [0..23], b in [0..3], c in [0..1]];
+
+assert #deg3 eq 192;
+assert &and[Degree(D) eq 3 : D in deg3];
+
+assert &and[Dimension(RiemannRochSpace(D)) in [1,2] : D in deg3];
+
+deg3:=[ D : D in deg3 | Dimension(RiemannRochSpace(D)) eq 1];
+
+assert #deg3 eq 184;
+
+deg3new:=[];
+for D in deg3 do
+L,mu:=RiemannRochSpace(D);
+assert Dimension(L) eq 1;
+D1:=D+Divisor(mu(L.1));
+assert IsEffective(D1);
+decomp:=Decomposition(D1);
+if #decomp eq 1 and decomp[1,2] eq 1 then
+Append(~deg3new,decomp[1,1]);
+end if;
+end for;
+
+assert #deg3new eq 48;
+
+real:=0;
+complex:=0;
+
+for D in deg3new do
+K:=ResidueClassField(D);
+assert IsNumberField(K);
+assert Degree(K) eq 3;
+if IsTotallyReal(K) eq true then
+    real:=real+1;
+else complex:=complex+1;
+end if;
+end for;
+
+assert real eq 16;
+assert complex eq 32;
+// thus we have 16 effective irreducible degree 3 divisors defined over a totally real cubic field
+// since the dimension of the Riemann-Roch space equals 1, we have 16*3=48 real degree 3 points that are not already rational points
