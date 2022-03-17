@@ -84,3 +84,67 @@ end for;
 
 // thus there are no irreducible degree 3 divisors
 // defined over a totally real cubic field
+
+// now we find all degree 4 points
+
+D1:=Place(ptsY[2])-Place(ptsY[1]);
+
+infdiv:=4*Place(ptsY[1]);
+
+deg4:=[a*D1+infdiv : a in [0..22]];
+
+assert #deg4 eq 23;
+assert &and[Degree(D) eq 4 : D in deg4];
+
+assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3] : D in deg4];
+
+deg4:=[ D : D in deg4 | Dimension(RiemannRochSpace(D)) eq 1];
+
+assert #deg4 eq 6;
+
+deg4new:=[];
+for D in deg4 do
+L,mu:=RiemannRochSpace(D);
+assert Dimension(L) eq 1;
+D1:=D+Divisor(mu(L.1));
+assert IsEffective(D1);
+decomp:=Decomposition(D1);
+if #decomp eq 1 and decomp[1,2] eq 1 then
+Append(~deg4new,decomp[1,1]);
+end if;
+end for;
+
+assert #deg4new eq 2;
+// thus there are 2 irreducible divisors of degree 4
+
+// now we find all degree 5 points
+
+D1:=Place(ptsY[2])-Place(ptsY[1]);
+
+infdiv:=5*Place(ptsY[1]);
+
+deg5:=[a*D1+infdiv : a in [0..22]];
+
+assert #deg5 eq 23;
+assert &and[Degree(D) eq 5 : D in deg5];
+
+assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3] : D in deg5];
+
+deg5:=[ D : D in deg5 | Dimension(RiemannRochSpace(D)) eq 1];
+
+assert #deg5 eq 18;
+
+deg5new:=[];
+for D in deg5 do
+L,mu:=RiemannRochSpace(D);
+assert Dimension(L) eq 1;
+D1:=D+Divisor(mu(L.1));
+assert IsEffective(D1);
+decomp:=Decomposition(D1);
+if #decomp eq 1 and decomp[1,2] eq 1 then
+Append(~deg5new,decomp[1,1]);
+end if;
+end for;
+
+assert #deg5new eq 11;
+// thus there are 11 irreducible divisors of degree 5
