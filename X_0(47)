@@ -85,6 +85,8 @@ end for;
 // thus there are no irreducible degree 3 divisors
 // defined over a totally real cubic field
 
+// now we find all degree 4 points
+
 D1:=Place(ptsY[2])-Place(ptsY[1]);
 
 infdiv:=4*Place(ptsY[1]);
