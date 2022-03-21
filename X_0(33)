@@ -43,22 +43,24 @@ delta:=hom<cuspGp->C | [mu1,mu2]>;
 assert #Kernel(delta) eq 1;
 assert Image(delta) eq C;
 
-cuspGpElts:={a*Q1+b*Q2 : a in [0..9], b in [0..4]};
-assert #cuspGpElts eq 50;
+cuspGpElts:={a*Q1+b*Q2 : a in [0..9], b in [0..9]};
+assert #cuspGpElts eq 100;
 
 D1:=Place(ptsY[2])-Place(ptsY[1]);
 D2:=Place(ptsY[3])-Place(ptsY[1]);
 
 infdiv:=3*Place(ptsY[1]);
 
-deg3:=[a*D1+b*D2+infdiv : a in [0..9], b in [0..4]];
+deg3:=[a*D1+b*D2+infdiv : a in [0..9], b in [0..9]];
 
-assert #deg3 eq 50;
+assert #deg3 eq 100;
 assert &and[Degree(D) eq 3 : D in deg3];
 
 assert &and[Dimension(RiemannRochSpace(D)) in [1,2] : D in deg3];
 
 deg3:=[ D : D in deg3 | Dimension(RiemannRochSpace(D)) eq 1];
+
+assert #deg3 eq 96;
 
 deg3new:=[];
 for D in deg3 do
@@ -72,8 +74,8 @@ Append(~deg3new,decomp[1,1]);
 end if;
 end for;
 
-assert #deg3new eq 20;
-// there are 20 irreducible divisors of degree 3
+assert #deg3new eq 40;
+// there are 40 irreducible divisors of degree 3
 
 for D in deg3new do
 K:=ResidueClassField(D);
