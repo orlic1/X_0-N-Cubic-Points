@@ -118,8 +118,8 @@ Append(~deg4new,decomp[1,1]);
 end if;
 end for;
 
-assert #deg3new eq 2;
-// thus there are 2 irreducible divisors of degree 4
+assert #deg4new eq 14;
+// thus there are 14 irreducible divisors of degree 4
 
 // now we find all degree 5 points
 
