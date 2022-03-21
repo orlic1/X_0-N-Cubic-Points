@@ -41,16 +41,16 @@ delta:=hom<cuspGp->C | [mu1]>;
 assert #Kernel(delta) eq 1;
 assert Image(delta) eq C;
 
-cuspGpElts:={a*Q1 : a in [0..22]};
-assert #cuspGpElts eq 23;
+cuspGpElts:={a*Q1 : a in [0..28]};
+assert #cuspGpElts eq 29;
 
 D1:=Place(ptsY[2])-Place(ptsY[1]);
 
 infdiv:=3*Place(ptsY[1]);
 
-deg3:=[a*D1+infdiv : a in [0..22]];
+deg3:=[a*D1+infdiv : a in [0..28]];
 
-assert #deg3 eq 23;
+assert #deg3 eq 29;
 assert &and[Degree(D) eq 3 : D in deg3];
 
 assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2] : D in deg3];
@@ -91,9 +91,9 @@ D1:=Place(ptsY[2])-Place(ptsY[1]);
 
 infdiv:=4*Place(ptsY[1]);
 
-deg4:=[a*D1+infdiv : a in [0..22]];
+deg4:=[a*D1+infdiv : a in [0..28]];
 
-assert #deg4 eq 23;
+assert #deg4 eq 29;
 assert &and[Degree(D) eq 4 : D in deg4];
 
 assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3] : D in deg4];
@@ -123,16 +123,16 @@ D1:=Place(ptsY[2])-Place(ptsY[1]);
 
 infdiv:=5*Place(ptsY[1]);
 
-deg5:=[a*D1+infdiv : a in [0..22]];
+deg5:=[a*D1+infdiv : a in [0..28]];
 
-assert #deg5 eq 23;
+assert #deg5 eq 29;
 assert &and[Degree(D) eq 5 : D in deg5];
 
 assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3] : D in deg5];
 
 deg5:=[ D : D in deg5 | Dimension(RiemannRochSpace(D)) eq 1];
 
-assert #deg5 eq 18;
+assert #deg5 eq 24;
 
 deg5new:=[];
 for D in deg5 do
@@ -146,5 +146,5 @@ Append(~deg5new,decomp[1,1]);
 end if;
 end for;
 
-assert #deg5new eq 11;
-// thus there are 11 irreducible divisors of degree 5
+assert #deg5new eq 16;
+// thus there are 16 irreducible divisors of degree 5
