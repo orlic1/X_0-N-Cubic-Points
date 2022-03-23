@@ -85,38 +85,6 @@ end for;
 // thus there are no irreducible degree 3 divisors
 // defined over a totally real cubic field
 
-// now we find all degree 4 points
-
-D1:=Place(ptsY[2])-Place(ptsY[1]);
-
-infdiv:=4*Place(ptsY[1]);
-
-deg4:=[a*D1+infdiv : a in [0..28]];
-
-assert #deg4 eq 29;
-assert &and[Degree(D) eq 4 : D in deg4];
-
-assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3] : D in deg4];
-
-deg4:=[ D : D in deg4 | Dimension(RiemannRochSpace(D)) eq 1];
-
-assert #deg4 eq 6;
-
-deg4new:=[];
-for D in deg4 do
-L,mu:=RiemannRochSpace(D);
-assert Dimension(L) eq 1;
-D1:=D+Divisor(mu(L.1));
-assert IsEffective(D1);
-decomp:=Decomposition(D1);
-if #decomp eq 1 and decomp[1,2] eq 1 then
-Append(~deg4new,decomp[1,1]);
-end if;
-end for;
-
-assert #deg4new eq 2;
-// thus there are 2 irreducible divisors of degree 4
-
 // now we find all degree 5 points
 
 D1:=Place(ptsY[2])-Place(ptsY[1]);
