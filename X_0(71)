@@ -74,38 +74,6 @@ end for;
 assert #deg3new eq 0;
 // thus there are no irreducible divisors of degree 3
 
-// now we find all points of degree 4
-
-D1:=Place(ptsY[2])-Place(ptsY[1]);
-
-infdiv:=4*Place(ptsY[1]);
-
-deg4:=[a*D1+infdiv : a in [0..34]];
-
-assert #deg4 eq 35;
-assert &and[Degree(D) eq 4 : D in deg4];
-
-assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3] : D in deg4];
-
-deg4:=[ D : D in deg4 | Dimension(RiemannRochSpace(D)) eq 1];
-
-assert #deg4 eq 2;
-
-deg4new:=[];
-for D in deg4 do
-L,mu:=RiemannRochSpace(D);
-assert Dimension(L) eq 1;
-D1:=D+Divisor(mu(L.1));
-assert IsEffective(D1);
-decomp:=Decomposition(D1);
-if #decomp eq 1 and decomp[1,2] eq 1 then
-Append(~deg4new,decomp[1,1]);
-end if;
-end for;
-
-assert #deg4new eq 0;
-// thus there are no irreducible divisors of degree 4
-
 // now we find all points of degree 5
 
 D1:=Place(ptsY[2])-Place(ptsY[1]);
@@ -137,35 +105,3 @@ end for;
 
 assert #deg5new eq 0;
 // thus there are no irreducible divisors of degree 5
-
-// now we find all points of degree 6
-
-D1:=Place(ptsY[2])-Place(ptsY[1]);
-
-infdiv:=6*Place(ptsY[1]);
-
-deg6:=[a*D1+infdiv : a in [0..34]];
-
-assert #deg6 eq 35;
-assert &and[Degree(D) eq 6 : D in deg6];
-
-assert &and[Dimension(RiemannRochSpace(D)) in [0,1,2,3,4] : D in deg6];
-
-deg6:=[ D : D in deg6 | Dimension(RiemannRochSpace(D)) eq 1];
-
-assert #deg6 eq 30;
-
-deg6new:=[];
-for D in deg6 do
-L,mu:=RiemannRochSpace(D);
-assert Dimension(L) eq 1;
-D1:=D+Divisor(mu(L.1));
-assert IsEffective(D1);
-decomp:=Decomposition(D1);
-if #decomp eq 1 and decomp[1,2] eq 1 then
-Append(~deg6new,decomp[1,1]);
-end if;
-end for;
-
-assert #deg6new eq 28;
-// thus there are 28 irreducible divisors of degree 6
